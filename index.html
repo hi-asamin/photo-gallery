@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASAMI — Photography</title>
+  <meta name="description" content="A visual journal by Asami. Light, landscape, and stillness." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ==================== OPENING ANIMATION ==================== -->
+  <div class="loader" id="loader">
+    <svg class="loader__svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- 外周リング -->
+      <circle class="loader__ring" cx="100" cy="100" r="78" fill="none" stroke="#fff" stroke-width="1" />
+      <!-- アパチャー（絞り）の8枚羽根 -->
+      <g class="loader__aperture" transform="translate(100 100)">
+        <polygon class="blade" points="0,-60 52,-30 26,30" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(45)" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(90)" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(135)" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(180)" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(225)" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(270)" />
+        <polygon class="blade" points="0,-60 52,-30 26,30" transform="rotate(315)" />
+      </g>
+      <!-- 中央テキスト -->
+      <text class="loader__text" x="100" y="106" text-anchor="middle">ASAMI</text>
+    </svg>
+    <div class="loader__caption" id="loaderCaption">
+      <span>L</span><span>O</span><span>A</span><span>D</span><span>I</span><span>N</span><span>G</span>
+    </div>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header" id="siteHeader">
+    <a href="#top" class="site-header__brand">ASAMI</a>
+    <nav class="site-header__nav">
+      <a href="#works">WORKS</a>
+      <a href="#story">STORY</a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+    <button class="site-header__menu" aria-label="menu" id="menuBtn">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <!-- モバイル用オーバーレイメニュー -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#works">WORKS</a>
+    <a href="#story">STORY</a>
+    <a href="#about">ABOUT</a>
+    <a href="#contact">CONTACT</a>
+  </div>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero" id="top">
+    <div class="hero__bg" data-speed="0.6">
+      <img alt="" loading="eager" />
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="hero__kicker">A VISUAL JOURNAL — 2026</p>
+      <h1 class="hero__title">
+        <span class="line"><span>Light,</span></span>
+        <span class="line"><span>landscape,</span></span>
+        <span class="line"><span>and stillness.</span></span>
+      </h1>
+      <p class="hero__subtitle">光と風景、そして静寂を撮る。</p>
+    </div>
+    <div class="hero__scroll">
+      <span>SCROLL</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ==================== INTRO TEXT ==================== -->
+  <section class="intro">
+    <p class="intro__text" id="introText">
+      I photograph the moments where light bends around silence — fleeting, ordinary, and never the same twice.
+    </p>
+  </section>
+
+  <!-- ==================== WORKS (PINNED HORIZONTAL) ==================== -->
+  <section class="works" id="works">
+    <div class="works__header">
+      <p class="section__index">01 / WORKS</p>
+      <h2 class="section__title">Selected<br/>Works</h2>
+    </div>
+
+    <div class="hscroll" id="hscroll">
+      <div class="hscroll__track" id="hscrollTrack"></div>
+    </div>
+  </section>
+
+  <!-- ==================== STORY (APPLE-LIKE PINNED) ==================== -->
+  <section class="story" id="story">
+    <div class="story__sticky">
+      <div class="story__media" id="storyMedia">
+        <img alt="" />
+      </div>
+      <div class="story__lines">
+        <p class="story__index">02 / STORY</p>
+        <h2 class="story__line" data-step="0">A camera is a way of seeing.</h2>
+        <h2 class="story__line" data-step="1">Of waiting until the world reveals itself.</h2>
+        <h2 class="story__line" data-step="2">Each frame is a kept breath.</h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GRID GALLERY ==================== -->
+  <section class="grid-gallery">
+    <div class="grid-gallery__head">
+      <p class="section__index">03 / ARCHIVE</p>
+      <h2 class="section__title">Archive</h2>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- ==================== ABOUT ==================== -->
+  <section class="about" id="about">
+    <div class="about__inner">
+      <div class="about__media" data-reveal>
+        <img alt="Portrait" />
+      </div>
+      <div class="about__text">
+        <p class="section__index">04 / ABOUT</p>
+        <h2 class="section__title">Asami</h2>
+        <p>
+          神奈川生まれ。風景と光、ささやかな日常を撮影する写真家。<br/>
+          自然光のなかでの静謐な瞬間と、その手触りを写真に残すことを大切にしています。
+        </p>
+        <p>
+          Based in Kanagawa, Japan. Working with natural light and quiet landscapes since 2019.
+          Featured in <em>STUDIO VOICE</em>, <em>IMA</em>, and selected exhibitions in Tokyo and Berlin.
+        </p>
+        <ul class="about__list">
+          <li><span>2025</span> Solo exhibition “Hour of Blue”, Tokyo</li>
+          <li><span>2024</span> Group show, Berlin Photo Week</li>
+          <li><span>2023</span> First photobook <em>Stillness</em> published</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CONTACT ==================== -->
+  <section class="contact" id="contact">
+    <p class="section__index">05 / CONTACT</p>
+    <h2 class="contact__title">
+      <span class="line"><span>Let's create</span></span>
+      <span class="line"><span>something</span></span>
+      <span class="line"><span>together.</span></span>
+    </h2>
+    <a class="contact__mail" href="mailto:hello@asami.photo">hello@asami.photo</a>
+    <ul class="contact__social">
+      <li><a href="https://www.instagram.com/maacy.photograph/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+      <li><a href="https://x.com/asmmsk1" target="_blank" rel="noopener noreferrer">X</a></li>
+    </ul>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="site-footer__row">
+      <span>© 2026 ASAMI. All rights reserved.</span>
+      <span>Designed with quiet light.</span>
+    </div>
+  </footer>
+
+  <!-- ==================== LIBS ==================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
