@@ -290,21 +290,6 @@ function buildReveals() {
    10. Section title reveal
 ---------------------------------------------------- */
 function buildTitleReveals() {
-  // contact title lines
-  ScrollTrigger.create({
-    trigger: '.contact',
-    start: 'top 70%',
-    onEnter: () => {
-      gsap.to('.contact__title .line > span', {
-        y: 0,
-        duration: 1.1,
-        stagger: 0.1,
-        ease: 'expo.out'
-      });
-    },
-    once: true
-  });
-
   // section titles fade up
   gsap.utils.toArray('.section__title').forEach(t => {
     gsap.from(t, {
