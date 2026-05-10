@@ -19,21 +19,16 @@ gsap.ticker.lagSmoothing(0);
 
 /* ----------------------------------------------------
    2. Opening Signature Animation
-   1画＝1パスとして順番にstroke-dashoffsetを動かし、
-   ペン先が走るように描画する（svgartistaと同方式）
+   実サインのベクタを clipPath の rect 幅で
+   左→右にスイープして「ペンが書き進める」演出にする
 ---------------------------------------------------- */
 function runOpening() {
   lenis.stop();
   document.body.style.overflow = 'hidden';
 
-  const paths = Array.from(document.querySelectorAll('.sig-path'));
-
-  // 各パスの実際の周長を測ってdasharray/offsetをセット
-  paths.forEach(p => {
-    const len = p.getTotalLength();
-    p.style.strokeDasharray = len;
-    p.style.strokeDashoffset = len;
-  });
+  const VB_WIDTH = 1700.405861;
+  const rect = document.getElementById('sigRevealRect');
+  const dot = document.querySelector('.sig-dot');
 
   const tl = gsap.timeline({
     onComplete: () => {
@@ -43,32 +38,27 @@ function runOpening() {
     }
   });
 
-  // 1画ずつ順番に描く（ペン速度は文字長に応じて少し変える）
-  paths.forEach((p, i) => {
-    const len = p.getTotalLength();
-    // ペン速度を一定に → 短い画は速く、長い画は時間をかける
-    const dur = Math.max(0.35, Math.min(0.9, len / 360));
-    tl.to(p, {
-      strokeDashoffset: 0,
-      duration: dur,
-      ease: 'power1.inOut'
-    }, i === 0 ? 0 : '-=0.08'); // 画と画の間にわずかな繋ぎ
+  // ペン先が左→右へ走る
+  tl.to(rect, {
+    attr: { width: VB_WIDTH },
+    duration: 2.8,
+    ease: 'power1.inOut'
   });
 
-  // i のドットを最後に「ぽん」と置く
-  tl.fromTo('.sig-dot',
-    { opacity: 0, attr: { r: 0 } },
-    { opacity: 1, attr: { r: 3.5 }, duration: 0.28, ease: 'back.out(2.4)' },
-    '+=0.05'
-  );
+  // i のドットを「ぽん」と置く（ペン到達直前）
+  tl.to(dot, {
+    opacity: 1,
+    duration: 0.22,
+    ease: 'power2.out'
+  }, '-=0.35');
 
   // 余韻
   tl.to({}, { duration: 0.55 });
 
-  // ローダーが上に抜ける
+  // ローダーフェードアウト → 上に抜ける
   tl.to('.loader__svg', {
     opacity: 0,
-    duration: 0.45,
+    duration: 0.5,
     ease: 'power2.in'
   });
 
@@ -76,7 +66,7 @@ function runOpening() {
     yPercent: -100,
     duration: 0.95,
     ease: 'expo.inOut'
-  }, '-=0.25');
+  }, '-=0.3');
 
   tl.set('.loader', { display: 'none' });
 }
