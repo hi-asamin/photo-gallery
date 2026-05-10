@@ -146,15 +146,26 @@ m-3108 -3124 c-899 -820 -2088 -1613 -2907 -1938 -464 -183 -827 -212 -1069
     </p>
   </section>
 
-  <!-- ==================== WORKS (PINNED HORIZONTAL) ==================== -->
+  <!-- ==================== WORKS (Pinned slide-by-slide) ==================== -->
   <section class="works" id="works">
-    <div class="works__header">
-      <p class="section__index">01 / WORKS</p>
-      <h2 class="section__title">Selected<br/>Works</h2>
-    </div>
-
-    <div class="hscroll" id="hscroll">
-      <div class="hscroll__track" id="hscrollTrack"></div>
+    <div class="works__sticky">
+      <div class="works__stage" id="worksStage"></div>
+      <div class="works__overlay"></div>
+      <div class="works__progress"><span id="worksProgressBar"></span></div>
+      <div class="works__head">
+        <p class="section__index">01 / WORKS</p>
+        <h2 class="section__title">Selected<br/>Works</h2>
+      </div>
+      <div class="works__caption" id="worksCaption">
+        <p class="caption__num">01</p>
+        <h3 class="caption__title"></h3>
+        <p class="caption__sub"></p>
+      </div>
+      <div class="works__counter">
+        <span id="worksCount">01</span>
+        <span class="counter__sep">—</span>
+        <span id="worksTotal">06</span>
+      </div>
     </div>
   </section>
 

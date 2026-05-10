@@ -164,46 +164,82 @@ function buildIntroWords() {
 }
 
 /* ----------------------------------------------------
-   7. Works — Horizontal pinned scroll
+   7. Works — Slide-by-slide pinned gallery
+   1枚＝1viewportで割り当て、進度に合わせてクロスフェード。
+   キャプション/カウンタは中央付近で表示、遷移中はフェード。
 ---------------------------------------------------- */
-function buildHorizontalScroll() {
-  const track = document.getElementById('hscrollTrack');
-  const wrap = document.getElementById('hscroll');
-  if (!track || !wrap) return;
+function updateWorksCaption(i) {
+  const data = window.WORKS_DATA;
+  if (!data || !data[i]) return;
+  const w = data[i];
+  const num = document.querySelector('.caption__num');
+  const title = document.querySelector('.caption__title');
+  const sub = document.querySelector('.caption__sub');
+  const count = document.getElementById('worksCount');
+  if (num) num.textContent = String(i + 1).padStart(2, '0');
+  if (title) title.textContent = w.title || '';
+  if (sub) sub.textContent = [w.location, w.year].filter(Boolean).join(', ');
+  if (count) count.textContent = String(i + 1).padStart(2, '0');
+}
 
-  const scrollAmount = () => track.scrollWidth - window.innerWidth;
+function buildWorksSlides() {
+  const slides = gsap.utils.toArray('.work-slide');
+  const works = document.querySelector('.works');
+  const bar = document.getElementById('worksProgressBar');
+  const caption = document.getElementById('worksCaption');
+  const N = slides.length;
+  if (!N || !works) return;
 
-  gsap.to(track, {
-    x: () => -scrollAmount(),
-    ease: 'none',
-    scrollTrigger: {
-      trigger: wrap,
-      start: 'top top',
-      end: () => '+=' + scrollAmount(),
-      pin: true,
-      scrub: 1,
-      invalidateOnRefresh: true,
-      anticipatePin: 1
-    }
-  });
+  // セクション全体を N×100vh にしてピン領域を確保
+  works.style.height = (N * 100) + 'vh';
 
-  // カードがスクロールに合わせて回転＆スケール
-  gsap.utils.toArray('.card').forEach((card, i) => {
-    gsap.fromTo(card, {
-      yPercent: 8,
-      scale: 0.94,
-    }, {
-      yPercent: 0,
-      scale: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: card,
-        containerAnimation: ScrollTrigger.getById('hscroll-anim') || undefined,
-        start: 'left right',
-        end: 'right left',
-        scrub: true
+  // 初期表示
+  gsap.set(slides, { opacity: 0 });
+  gsap.set(slides[0], { opacity: 1 });
+
+  let lastIdx = 0;
+
+  ScrollTrigger.create({
+    trigger: works,
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 0.4,
+    onUpdate: (self) => {
+      const p = self.progress;
+      if (bar) bar.style.width = (p * 100) + '%';
+
+      // 進度を0..(N-1)のスライド位置にマップ（端を少し保持）
+      const margin = 0.04;
+      const adj = (p - margin) / Math.max(0.0001, 1 - 2 * margin);
+      const pos = Math.max(0, Math.min(N - 1, adj * (N - 1)));
+
+      // 各スライドのopacityとscale
+      slides.forEach((slide, i) => {
+        const dist = Math.abs(i - pos);
+        const opacity = Math.max(0, 1 - dist * 1.4);
+        gsap.set(slide, { opacity });
+        const img = slide.querySelector('img');
+        if (img) {
+          // 中央付近で1.0、離れるほど1.06に拡大
+          const scale = 1.06 - Math.max(0, 1 - dist) * 0.06;
+          img.style.transform = `scale(${scale})`;
+        }
+      });
+
+      // キャプションは中央付近で表示、遷移中はフェード
+      if (caption) {
+        const distToNearest = Math.abs(pos - Math.round(pos));
+        const opacity = Math.max(0, 1 - distToNearest * 3);
+        caption.style.opacity = String(opacity);
       }
-    });
+
+      // 最寄りスライドが変わったらキャプション内容を更新
+      const nearestIdx = Math.round(pos);
+      if (nearestIdx !== lastIdx) {
+        lastIdx = nearestIdx;
+        updateWorksCaption(nearestIdx);
+      }
+    }
   });
 }
 
@@ -329,20 +365,17 @@ function buildPhotos() {
   setSrc('#storyMedia img', data.story);
   setSrc('.about__media img', data.about);
 
-  const track = document.getElementById('hscrollTrack');
-  if (track && Array.isArray(data.works)) {
-    track.innerHTML = data.works.map((p, i) => `
-      <article class="card">
-        <div class="card__img">
-          <img src="${p.src}" alt="${p.title || ''}" loading="lazy" />
-        </div>
-        <div class="card__meta">
-          <span>${String(i + 1).padStart(2, '0')}</span>
-          <h3>${p.title || ''}</h3>
-          <p>${[p.location, p.year].filter(Boolean).join(', ')}</p>
-        </div>
-      </article>
+  const stage = document.getElementById('worksStage');
+  if (stage && Array.isArray(data.works)) {
+    stage.innerHTML = data.works.map((p, i) => `
+      <figure class="work-slide" data-i="${i}">
+        <img src="${p.src}" alt="${p.title || ''}" loading="${i === 0 ? 'eager' : 'lazy'}" />
+      </figure>
     `).join('');
+    window.WORKS_DATA = data.works;
+    const total = document.getElementById('worksTotal');
+    if (total) total.textContent = String(data.works.length).padStart(2, '0');
+    updateWorksCaption(0);
   }
 
   const grid = document.getElementById('grid');
@@ -362,7 +395,7 @@ function buildPhotos() {
 window.addEventListener('load', () => {
   buildPhotos();
   buildIntroWords();
-  buildHorizontalScroll();
+  buildWorksSlides();
   buildStoryPin();
   buildHeroExit();
   buildReveals();
