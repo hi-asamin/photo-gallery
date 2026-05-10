@@ -44,7 +44,7 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 }
 
 /* ==================================================
-   Loader (Opening SVG Animation)
+   Loader (Opening Signature Animation)
 ================================================== */
 .loader {
   position: fixed;
@@ -52,52 +52,26 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   background: #0a0a0a;
   z-index: 9999;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   pointer-events: all;
 }
 .loader__svg {
-  width: min(40vw, 280px);
-  height: min(40vw, 280px);
+  width: min(80vw, 640px);
+  height: auto;
   overflow: visible;
 }
-.loader__ring {
-  transform-origin: center;
-  transform-box: fill-box;
-  stroke-dasharray: 490;
-  stroke-dashoffset: 490;
-}
-.loader__aperture {
-  transform-origin: center;
-  transform-box: fill-box;
-}
-.blade {
+.signature {
+  font-family: 'Sacramento', cursive;
+  font-weight: 400;
+  font-size: 240px;
   fill: #f7f6f2;
-  transform-origin: center;
-  transform-box: fill-box;
-  opacity: 0;
-}
-.loader__text {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-size: 28px;
-  letter-spacing: 0.4em;
-  fill: #f7f6f2;
-  opacity: 0;
-}
-.loader__caption {
-  margin-top: 2.5rem;
-  display: flex;
-  gap: 0.4em;
-  font-size: 11px;
-  letter-spacing: 0.3em;
-  color: #f7f6f2;
-}
-.loader__caption span {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(8px);
+  fill-opacity: 0;
+  stroke: #f7f6f2;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  letter-spacing: 0.01em;
 }
 
 /* ==================================================

@@ -18,12 +18,28 @@ gsap.ticker.add((time) => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0);
 
 /* ----------------------------------------------------
-   2. Opening SVG Animation
+   2. Opening Signature Animation
 ---------------------------------------------------- */
-function runOpening() {
-  // ページ初期はスクロールロック
+async function runOpening() {
   lenis.stop();
   document.body.style.overflow = 'hidden';
+
+  // 筆記体フォントが読み終わるのを待つ（ロード前だと幅計測が狂う）
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch (e) {}
+  }
+
+  const sig = document.querySelector('.signature');
+  // テキストの輪郭周長は計測APIがないので、ベースライン幅から経験値で換算
+  let DASH = 2200;
+  if (sig && typeof sig.getComputedTextLength === 'function') {
+    const base = sig.getComputedTextLength();
+    if (base > 0) DASH = Math.max(base * 2.6, 1500);
+  }
+  if (sig) {
+    sig.style.strokeDasharray = DASH;
+    sig.style.strokeDashoffset = DASH;
+  }
 
   const tl = gsap.timeline({
     onComplete: () => {
@@ -33,67 +49,29 @@ function runOpening() {
     }
   });
 
-  // リング描画
-  tl.to('.loader__ring', {
+  // ペン先が走るように輪郭を描く
+  tl.to(sig, {
     strokeDashoffset: 0,
-    duration: 1.4,
-    ease: 'power3.inOut'
+    duration: 2.6,
+    ease: 'power1.inOut'
   });
 
-  // アパチャー羽根が中心から開く
-  tl.from('.loader__aperture', {
-    scale: 0,
-    rotation: -90,
-    duration: 1.0,
-    ease: 'power3.out',
-    transformOrigin: 'center'
-  }, '-=0.8');
-
-  tl.to('.blade', {
-    opacity: 1,
-    duration: 0.4,
-    stagger: 0.04,
-    ease: 'power2.out'
-  }, '-=0.9');
-
-  // 中央テキストフェードイン
-  tl.to('.loader__text', {
-    opacity: 1,
-    duration: 0.6,
-    ease: 'power2.out'
-  }, '-=0.3');
-
-  // キャプション (LOADING)
-  tl.to('.loader__caption span', {
-    opacity: 0.7,
-    y: 0,
-    duration: 0.4,
-    stagger: 0.05,
-    ease: 'power2.out'
-  }, '-=0.4');
-
-  tl.to({}, { duration: 0.6 });
-
-  // アパチャー閉じる → ローダー全体フェードアウト
-  tl.to('.blade', {
-    scale: 0,
+  // 線の上にインクが滲むようにフィル
+  tl.to(sig, {
+    fillOpacity: 1,
     duration: 0.7,
-    stagger: 0.03,
-    ease: 'power3.inOut',
-    transformOrigin: 'center'
-  });
+    ease: 'power2.out'
+  }, '-=0.6');
 
-  tl.to(['.loader__text', '.loader__ring', '.loader__caption'], {
-    opacity: 0,
-    duration: 0.4,
-    ease: 'power2.in'
-  }, '-=0.4');
+  // 余韻
+  tl.to({}, { duration: 0.5 });
 
+  // ローダーが上に抜ける
   tl.to('.loader', {
     yPercent: -100,
     duration: 1.0,
     ease: 'expo.inOut'
-  }, '-=0.1');
+  });
 
   tl.set('.loader', { display: 'none' });
 }
