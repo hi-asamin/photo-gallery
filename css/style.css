@@ -147,6 +147,16 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   transform: scaleX(1);
   transform-origin: left;
 }
+.site-header__nav .icon-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+.site-header__nav .icon-link::after { display: none; }
+.site-header__nav .icon-link:hover { opacity: 0.55; }
+.site-header__nav .icon-link:first-of-type { margin-left: 0.6rem; }
+.site-header__nav .icon-link svg { display: block; }
 .site-header__menu {
   display: none;
   width: 28px;
@@ -536,26 +546,17 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   font-size: clamp(56px, 10vw, 160px);
   line-height: 0.95;
   letter-spacing: -0.02em;
-  margin: 1rem 0 4rem;
+  margin: 1rem 0 3rem;
 }
 .contact__title .line { display: block; overflow: hidden; }
 .contact__title .line > span {
   display: inline-block;
   transform: translateY(110%);
 }
-.contact__mail {
-  display: inline-block;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(28px, 4vw, 48px);
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 4px;
-  transition: color 0.3s ease;
-}
-.contact__mail:hover { color: #888; }
 .contact__social {
   display: flex;
   gap: 2rem;
-  margin-top: 4rem;
+  margin-top: 0;
   font-size: 12px;
   letter-spacing: 0.25em;
 }
