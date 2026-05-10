@@ -8,16 +8,34 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&family=Sacramento&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
   <!-- ==================== OPENING ANIMATION ==================== -->
+  <!--
+    手書きサイン: 1画＝1パス。順番にstroke-dashoffsetで描画される。
+    自前のサインに差し替えたい場合: 各 <path> の d="..." を入れ替えるか、
+    Illustrator/Figmaで書いたSVGの <path> を貼り直す。
+  -->
   <div class="loader" id="loader">
-    <svg class="loader__svg" viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <text class="signature" x="400" y="220" text-anchor="middle">Asami</text>
+    <svg class="loader__svg" viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="none" stroke="#f7f6f2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <!-- A: 立ち上がり〜頂点〜下降〜tail -->
+        <path class="sig-path" d="M 70 185 Q 100 75 165 75 Q 198 78 198 130 Q 198 178 205 198 Q 220 205 240 188" />
+        <!-- s: 反転カーブ -->
+        <path class="sig-path" d="M 252 130 Q 270 102 295 115 Q 312 127 282 148 Q 258 162 270 178 Q 290 192 312 175" />
+        <!-- a: ループ + tail -->
+        <path class="sig-path" d="M 350 145 Q 322 138 322 168 Q 325 192 350 188 Q 368 184 362 155 L 362 145 L 362 185 Q 372 198 398 188" />
+        <!-- m: 三つの山 -->
+        <path class="sig-path" d="M 412 188 Q 412 142 428 130 Q 444 130 444 172 Q 444 142 464 130 Q 478 130 478 172 Q 478 142 498 130 Q 514 130 514 188" />
+        <!-- i: 縦軸 + 終わりのフロー -->
+        <path class="sig-path" d="M 528 132 Q 528 172 544 188 Q 580 202 622 178" />
+      </g>
+      <!-- i のドット -->
+      <circle class="sig-dot" cx="538" cy="105" r="3.5" fill="#f7f6f2" />
     </svg>
   </div>
 

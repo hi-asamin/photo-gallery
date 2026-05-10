@@ -19,27 +19,21 @@ gsap.ticker.lagSmoothing(0);
 
 /* ----------------------------------------------------
    2. Opening Signature Animation
+   1画＝1パスとして順番にstroke-dashoffsetを動かし、
+   ペン先が走るように描画する（svgartistaと同方式）
 ---------------------------------------------------- */
-async function runOpening() {
+function runOpening() {
   lenis.stop();
   document.body.style.overflow = 'hidden';
 
-  // 筆記体フォントが読み終わるのを待つ（ロード前だと幅計測が狂う）
-  if (document.fonts && document.fonts.ready) {
-    try { await document.fonts.ready; } catch (e) {}
-  }
+  const paths = Array.from(document.querySelectorAll('.sig-path'));
 
-  const sig = document.querySelector('.signature');
-  // テキストの輪郭周長は計測APIがないので、ベースライン幅から経験値で換算
-  let DASH = 2200;
-  if (sig && typeof sig.getComputedTextLength === 'function') {
-    const base = sig.getComputedTextLength();
-    if (base > 0) DASH = Math.max(base * 2.6, 1500);
-  }
-  if (sig) {
-    sig.style.strokeDasharray = DASH;
-    sig.style.strokeDashoffset = DASH;
-  }
+  // 各パスの実際の周長を測ってdasharray/offsetをセット
+  paths.forEach(p => {
+    const len = p.getTotalLength();
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+  });
 
   const tl = gsap.timeline({
     onComplete: () => {
@@ -49,29 +43,40 @@ async function runOpening() {
     }
   });
 
-  // ペン先が走るように輪郭を描く
-  tl.to(sig, {
-    strokeDashoffset: 0,
-    duration: 2.6,
-    ease: 'power1.inOut'
+  // 1画ずつ順番に描く（ペン速度は文字長に応じて少し変える）
+  paths.forEach((p, i) => {
+    const len = p.getTotalLength();
+    // ペン速度を一定に → 短い画は速く、長い画は時間をかける
+    const dur = Math.max(0.35, Math.min(0.9, len / 360));
+    tl.to(p, {
+      strokeDashoffset: 0,
+      duration: dur,
+      ease: 'power1.inOut'
+    }, i === 0 ? 0 : '-=0.08'); // 画と画の間にわずかな繋ぎ
   });
 
-  // 線の上にインクが滲むようにフィル
-  tl.to(sig, {
-    fillOpacity: 1,
-    duration: 0.7,
-    ease: 'power2.out'
-  }, '-=0.6');
+  // i のドットを最後に「ぽん」と置く
+  tl.fromTo('.sig-dot',
+    { opacity: 0, attr: { r: 0 } },
+    { opacity: 1, attr: { r: 3.5 }, duration: 0.28, ease: 'back.out(2.4)' },
+    '+=0.05'
+  );
 
   // 余韻
-  tl.to({}, { duration: 0.5 });
+  tl.to({}, { duration: 0.55 });
 
   // ローダーが上に抜ける
+  tl.to('.loader__svg', {
+    opacity: 0,
+    duration: 0.45,
+    ease: 'power2.in'
+  });
+
   tl.to('.loader', {
     yPercent: -100,
-    duration: 1.0,
+    duration: 0.95,
     ease: 'expo.inOut'
-  });
+  }, '-=0.25');
 
   tl.set('.loader', { display: 'none' });
 }

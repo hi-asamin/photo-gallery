@@ -61,17 +61,11 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   height: auto;
   overflow: visible;
 }
-.signature {
-  font-family: 'Sacramento', cursive;
-  font-weight: 400;
-  font-size: 240px;
-  fill: #f7f6f2;
-  fill-opacity: 0;
-  stroke: #f7f6f2;
-  stroke-width: 1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  letter-spacing: 0.01em;
+.sig-path {
+  /* JSが getTotalLength() で計測してdasharray/offsetをセット */
+}
+.sig-dot {
+  opacity: 0;
 }
 
 /* ==================================================
