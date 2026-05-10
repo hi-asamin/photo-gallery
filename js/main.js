@@ -208,35 +208,57 @@ function buildHorizontalScroll() {
 }
 
 /* ----------------------------------------------------
-   8. Story — sticky line crossfade
+   8. Story — Apple LP-like chapter scrollytelling
+   章ごとに見出しが切り替わり、背景画像はスティッキーで保持
 ---------------------------------------------------- */
 function buildStoryPin() {
-  const lines = gsap.utils.toArray('.story__line');
+  const chapters = gsap.utils.toArray('.chapter');
   const media = document.querySelector('#storyMedia img');
-  if (!lines.length) return;
+  const bar = document.getElementById('storyProgressBar');
+  const N = chapters.length;
+  if (!N) return;
 
   ScrollTrigger.create({
     trigger: '.story',
     start: 'top top',
     end: 'bottom bottom',
-    scrub: true,
+    scrub: 0.4,
     onUpdate: (self) => {
-      // 背景のスケール
-      if (media) {
-        const scale = 1.05 + self.progress * 0.15;
-        media.style.transform = `scale(${scale})`;
-      }
-      // 行の切り替え
-      const step = Math.min(lines.length - 1, Math.floor(self.progress * lines.length));
-      lines.forEach((l, i) => {
-        gsap.to(l, {
-          opacity: i === step ? 1 : 0,
-          y: i === step ? 0 : (i < step ? -40 : 40),
-          duration: 0.4,
-          ease: 'power2.out',
-          overwrite: 'auto'
-        });
+      const p = self.progress;
+
+      // 背景画像をゆっくり拡大（Apple同様、奥に引き込まれる感じ）
+      if (media) media.style.transform = `scale(${1 + p * 0.45})`;
+      if (bar) bar.style.width = (p * 100) + '%';
+
+      // 章を進行に応じて切替（クロスフェード + Y方向のすれ違い）
+      const margin = 0.06; // 最初と最後の章を少し長く保持
+      const adj = (p - margin) / Math.max(0.0001, 1 - 2 * margin);
+      const pos = Math.max(0, Math.min(N - 1, adj * (N - 1)));
+
+      chapters.forEach((ch, i) => {
+        const dist = i - pos;
+        const opacity = Math.max(0, 1 - Math.abs(dist) * 1.9);
+        const y = dist * 60;
+        gsap.set(ch, { opacity, y });
       });
+    }
+  });
+}
+
+/* ----------------------------------------------------
+   8b. Hero — scale-down exit (Apple LP風）
+   スクロールで次セクションに移る瞬間に縮んでカード化
+---------------------------------------------------- */
+function buildHeroExit() {
+  gsap.to('.hero', {
+    scale: 0.94,
+    borderRadius: 28,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'bottom bottom',
+      end: 'bottom 30%',
+      scrub: 0.4
     }
   });
 }
@@ -342,6 +364,7 @@ window.addEventListener('load', () => {
   buildIntroWords();
   buildHorizontalScroll();
   buildStoryPin();
+  buildHeroExit();
   buildReveals();
   buildTitleReveals();
   runOpening();

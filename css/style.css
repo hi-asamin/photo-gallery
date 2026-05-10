@@ -168,6 +168,8 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   height: 100vh;
   min-height: 700px;
   overflow: hidden;
+  transform-origin: center top;
+  will-change: transform, border-radius;
 }
 .hero__bg {
   position: absolute;
@@ -352,69 +354,107 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 }
 
 /* ==================================================
-   Story (Apple-like Sticky)
+   Story (Apple LP-like pinned scrollytelling)
 ================================================== */
 .story {
   position: relative;
   background: #0a0a0a;
   color: #f7f6f2;
-  height: 300vh;
+  height: 500vh;
 }
 .story__sticky {
   position: sticky;
   top: 0;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 .story__media {
   position: absolute;
   inset: 0;
   z-index: 1;
+  overflow: hidden;
 }
 .story__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.55;
-  transform: scale(1.05);
-  transition: transform 0.1s linear;
+  opacity: 0.6;
+  transform: scale(1);
+  will-change: transform;
 }
 .story__media::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.7) 100%);
-}
-.story__lines {
-  position: relative;
+  background:
+    radial-gradient(ellipse at center, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.85) 100%),
+    linear-gradient(180deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 100%);
   z-index: 2;
-  text-align: center;
-  padding: 0 2rem;
 }
-.story__index {
+.story__progress {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 4;
+  height: 1px;
+  background: rgba(247,246,242,0.12);
+}
+.story__progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: #f7f6f2;
+  will-change: width;
+}
+.story__label {
+  position: absolute;
+  top: 1.6rem;
+  left: 2.5rem;
+  z-index: 4;
   font-size: 11px;
   letter-spacing: 0.4em;
-  opacity: 0.7;
-  margin-bottom: 3rem;
+  opacity: 0.55;
+  margin: 0;
 }
-.story__line {
+.story__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chapter {
+  position: absolute;
+  width: min(92vw, 1100px);
+  text-align: center;
+  padding: 0 2rem;
+  opacity: 0;
+  transform: translateY(60px);
+  will-change: transform, opacity;
+}
+.chapter:first-child { opacity: 1; transform: translateY(0); }
+.chapter__num {
+  font-size: 11px;
+  letter-spacing: 0.45em;
+  opacity: 0.6;
+  margin-bottom: 2.2rem;
+}
+.chapter__title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
-  font-size: clamp(36px, 6vw, 84px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 1100px;
-  opacity: 0;
+  font-size: clamp(40px, 7.2vw, 108px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin-bottom: 1.6rem;
 }
-.story__line[data-step="0"] { opacity: 1; }
+.chapter__body {
+  font-size: clamp(13px, 1.4vw, 16px);
+  letter-spacing: 0.06em;
+  opacity: 0.72;
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
 
 /* ==================================================
    Grid Gallery
