@@ -5,7 +5,7 @@
 window.PHOTOS = {
   hero:  "assets/photos/sample-01.jpg",
   story: "assets/photos/sample-07.jpg",
-  about: "assets/photos/sample-10.jpg",
+  about: "assets/photos/profile.png",
 
   works: [
     { src: "assets/photos/sample-02.jpg", title: "Untitled — 01", location: "", year: "" },
