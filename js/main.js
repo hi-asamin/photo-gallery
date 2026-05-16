@@ -26,7 +26,7 @@ function runOpening() {
   lenis.stop();
   document.body.style.overflow = 'hidden';
 
-  const VB_WIDTH = 1700.405861;
+  const VB_WIDTH = 1564.402026;
   const rect = document.getElementById('sigRevealRect');
   const dot = document.querySelector('.sig-dot');
 
