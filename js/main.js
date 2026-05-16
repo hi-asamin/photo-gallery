@@ -390,6 +390,59 @@ function buildPhotos() {
 }
 
 /* ----------------------------------------------------
+   12. GA4 — custom click events
+   PV と滞在時間は gtag('config', ...) と GA4 Enhanced Measurement で自動取得。
+   ここでは「どのリンクが押されたか」の構造化イベントを追加で送る。
+---------------------------------------------------- */
+function track(name, params) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, params || {});
+  }
+}
+
+function buildAnalytics() {
+  // ヘッダーナビ（WORKS / STORY / ABOUT）
+  document.querySelectorAll('.site-header__nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', () => {
+      track('nav_click', {
+        target: (a.getAttribute('href') || '').replace('#', ''),
+        location: 'header'
+      });
+    });
+  });
+
+  // モバイルメニュー
+  document.querySelectorAll('.mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => {
+      track('nav_click', {
+        target: (a.getAttribute('href') || '').replace('#', ''),
+        location: 'mobile_menu'
+      });
+    });
+  });
+
+  // SNSアイコン（ヘッダー & About）
+  document.querySelectorAll('.site-header__nav .icon-link, .about__social a').forEach(a => {
+    a.addEventListener('click', () => {
+      const isHeader = a.closest('.site-header__nav');
+      track('social_click', {
+        platform: a.getAttribute('aria-label') || 'unknown',
+        location: isHeader ? 'header' : 'about',
+        url: a.getAttribute('href') || ''
+      });
+    });
+  });
+
+  // ブランドロゴ（先頭へ戻る）
+  const brand = document.querySelector('.site-header__brand');
+  if (brand) {
+    brand.addEventListener('click', () => {
+      track('brand_click', { location: 'header' });
+    });
+  }
+}
+
+/* ----------------------------------------------------
    Init
 ---------------------------------------------------- */
 window.addEventListener('load', () => {
@@ -400,6 +453,7 @@ window.addEventListener('load', () => {
   buildHeroExit();
   buildReveals();
   buildTitleReveals();
+  buildAnalytics();
   runOpening();
 
   // Refresh after fonts/images settle
