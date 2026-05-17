@@ -3,7 +3,8 @@
 // archive の layout: "default" | "tall"（縦に2行ぶち抜き）| "wide"（横に2列ぶち抜き）
 
 window.PHOTOS = {
-  hero:  "assets/photos/sample-01.jpg",
+  // hero は index.html の <video src="assets/videos/hero.mp4"> でハードコード
+  // 動画を差し替える場合は assets/videos/hero.mp4 を入れ替えるだけ
 
   // STORY セクションは章数に合わせて4枚（順番に切り替わります）
   story: [

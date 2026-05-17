@@ -103,7 +103,7 @@ function runHeroIntro() {
   }, '-=0.2');
 
   // 背景パララックス
-  gsap.to('.hero__bg img', {
+  gsap.to('.hero__bg img, .hero__bg video', {
     yPercent: 20,
     ease: 'none',
     scrollTrigger: {
@@ -422,8 +422,8 @@ function buildPhotos() {
     const img = document.querySelector(selector);
     if (img && url) img.src = url;
   };
-  setSrc('.hero__bg img', data.hero);
   setSrc('.about__media img', data.about);
+  // hero は index.html に <video> でハードコード済み（assets/videos/hero.mp4）
 
   // Story: 章数に合わせて複数の写真をスタック
   const storyMedia = document.getElementById('storyMedia');
