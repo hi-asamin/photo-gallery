@@ -4,7 +4,15 @@
 
 window.PHOTOS = {
   hero:  "assets/photos/sample-01.jpg",
-  story: "assets/photos/sample-07.jpg",
+
+  // STORY セクションは章数に合わせて4枚（順番に切り替わります）
+  story: [
+    "assets/photos/sample-07.jpg",
+    "assets/photos/sample-09.jpg",
+    "assets/photos/sample-04.jpg",
+    "assets/photos/sample-10.jpg",
+  ],
+
   about: "assets/photos/profile.png",
 
   works: [

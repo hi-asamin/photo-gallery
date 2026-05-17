@@ -187,6 +187,7 @@ function buildWorksSlides() {
   const works = document.querySelector('.works');
   const bar = document.getElementById('worksProgressBar');
   const caption = document.getElementById('worksCaption');
+  const bignum = document.getElementById('worksBignum');
   const N = slides.length;
   if (!N || !works) return;
 
@@ -194,7 +195,7 @@ function buildWorksSlides() {
   works.style.height = (N * 100) + 'vh';
 
   // 初期表示
-  gsap.set(slides, { opacity: 0 });
+  gsap.set(slides, { opacity: 0, yPercent: 0 });
   gsap.set(slides[0], { opacity: 1 });
 
   let lastIdx = 0;
@@ -208,36 +209,59 @@ function buildWorksSlides() {
       const p = self.progress;
       if (bar) bar.style.width = (p * 100) + '%';
 
-      // 進度を0..(N-1)のスライド位置にマップ（端を少し保持）
       const margin = 0.04;
       const adj = (p - margin) / Math.max(0.0001, 1 - 2 * margin);
       const pos = Math.max(0, Math.min(N - 1, adj * (N - 1)));
 
-      // 各スライドのopacityとscale
       slides.forEach((slide, i) => {
-        const dist = Math.abs(i - pos);
-        const opacity = Math.max(0, 1 - dist * 1.4);
-        gsap.set(slide, { opacity });
+        const dist = i - pos;                  // 符号付き距離
+        const aDist = Math.abs(dist);
+        const opacity = Math.max(0, 1 - aDist * 1.4);
+
+        // 縦方向のスライド：未来は下から、過去は上へ
+        // クランプ範囲を絞り、隣接スライド以上は固定
+        const clamped = Math.max(-1.2, Math.min(1.2, dist));
+        const yPercent = clamped * 18;         // ±21.6% まで
+
+        gsap.set(slide, { opacity, yPercent });
+
+        // 画像にケンバーンズ：見えている間にゆっくり拡大＋微かなパン
         const img = slide.querySelector('img');
         if (img) {
-          // 中央付近で1.0、離れるほど1.06に拡大
-          const scale = 1.06 - Math.max(0, 1 - dist) * 0.06;
-          img.style.transform = `scale(${scale})`;
+          // dist=+1: scale 1.02, dist=0: scale 1.08, dist=-1: scale 1.14
+          const scale = 1.08 - clamped * 0.06;
+          // パン：中央付近で 0、離れるほど ±2%
+          const panY = clamped * 2;
+          img.style.transform = `scale(${scale}) translateY(${panY}%)`;
         }
       });
 
-      // キャプションは中央付近で表示、遷移中はフェード
+      // キャプションは中央付近で表示
       if (caption) {
         const distToNearest = Math.abs(pos - Math.round(pos));
-        const opacity = Math.max(0, 1 - distToNearest * 3);
-        caption.style.opacity = String(opacity);
+        const cOpacity = Math.max(0, 1 - distToNearest * 3);
+        caption.style.opacity = String(cOpacity);
       }
 
-      // 最寄りスライドが変わったらキャプション内容を更新
+      // 巨大番号：常に「現在の番号」を表示し、切替時にポップ
       const nearestIdx = Math.round(pos);
       if (nearestIdx !== lastIdx) {
         lastIdx = nearestIdx;
         updateWorksCaption(nearestIdx);
+        if (bignum) {
+          bignum.textContent = String(nearestIdx + 1).padStart(2, '0');
+          gsap.fromTo(bignum,
+            { scale: 0.82, opacity: 0 },
+            { scale: 1, opacity: 0.13, duration: 0.6, ease: 'expo.out', overwrite: true }
+          );
+        }
+      }
+
+      // 巨大番号は最寄り中心からの距離で透明度を抑える（遷移中はやや暗く）
+      if (bignum) {
+        const distToNearest = Math.abs(pos - Math.round(pos));
+        const baseOp = 0.13 - distToNearest * 0.06;
+        bignum.style.opacity = String(Math.max(0.04, baseOp));
       }
     }
   });
@@ -249,10 +273,13 @@ function buildWorksSlides() {
 ---------------------------------------------------- */
 function buildStoryPin() {
   const chapters = gsap.utils.toArray('.chapter');
-  const media = document.querySelector('#storyMedia img');
+  const photos = gsap.utils.toArray('.story-photo');
   const bar = document.getElementById('storyProgressBar');
+  const bignum = document.getElementById('storyBignum');
   const N = chapters.length;
   if (!N) return;
+
+  let lastIdx = 0;
 
   ScrollTrigger.create({
     trigger: '.story',
@@ -261,22 +288,56 @@ function buildStoryPin() {
     scrub: 0.4,
     onUpdate: (self) => {
       const p = self.progress;
-
-      // 背景画像をゆっくり拡大（Apple同様、奥に引き込まれる感じ）
-      if (media) media.style.transform = `scale(${1 + p * 0.45})`;
       if (bar) bar.style.width = (p * 100) + '%';
 
-      // 章を進行に応じて切替（クロスフェード + Y方向のすれ違い）
-      const margin = 0.06; // 最初と最後の章を少し長く保持
+      const margin = 0.06;
       const adj = (p - margin) / Math.max(0.0001, 1 - 2 * margin);
       const pos = Math.max(0, Math.min(N - 1, adj * (N - 1)));
 
+      // 章テキスト：左右交互に入退場 + Y方向のすれ違い
       chapters.forEach((ch, i) => {
         const dist = i - pos;
-        const opacity = Math.max(0, 1 - Math.abs(dist) * 1.9);
-        const y = dist * 60;
-        gsap.set(ch, { opacity, y });
+        const aDist = Math.abs(dist);
+        const opacity = Math.max(0, 1 - aDist * 1.9);
+        const y = dist * 70;
+        // 偶数章は右↔︎、奇数章は左↔︎ にすれ違う
+        const dir = (i % 2 === 0) ? 1 : -1;
+        const x = dir * dist * 60;
+        gsap.set(ch, { opacity, y, x });
       });
+
+      // 背景写真：章ごとにクロスフェード + 個別ケンバーンズ
+      photos.forEach((photo, i) => {
+        const dist = i - pos;
+        const aDist = Math.abs(dist);
+        const opacity = Math.max(0, 1 - aDist * 1.5);
+        photo.style.opacity = String(opacity);
+        const img = photo.querySelector('img');
+        if (img) {
+          // 出現中: 1.02 → 中央: 1.10 → 退出中: 1.18（一方向ズーム）
+          const clamped = Math.max(-1.2, Math.min(1.2, dist));
+          const scale = 1.10 - clamped * 0.08;
+          img.style.transform = `scale(${scale})`;
+        }
+      });
+
+      // 巨大章番号
+      const nearestIdx = Math.round(pos);
+      if (nearestIdx !== lastIdx) {
+        lastIdx = nearestIdx;
+        if (bignum) {
+          bignum.textContent = String(nearestIdx + 1).padStart(2, '0');
+          gsap.fromTo(bignum,
+            { scale: 0.82, opacity: 0 },
+            { scale: 1, opacity: 0.08, duration: 0.7, ease: 'expo.out', overwrite: true }
+          );
+        }
+      }
+      if (bignum) {
+        const distToNearest = Math.abs(pos - Math.round(pos));
+        const baseOp = 0.08 - distToNearest * 0.04;
+        bignum.style.opacity = String(Math.max(0.02, baseOp));
+      }
     }
   });
 }
@@ -362,8 +423,18 @@ function buildPhotos() {
     if (img && url) img.src = url;
   };
   setSrc('.hero__bg img', data.hero);
-  setSrc('#storyMedia img', data.story);
   setSrc('.about__media img', data.about);
+
+  // Story: 章数に合わせて複数の写真をスタック
+  const storyMedia = document.getElementById('storyMedia');
+  if (storyMedia) {
+    const storyArr = Array.isArray(data.story) ? data.story : (data.story ? [data.story] : []);
+    storyMedia.innerHTML = storyArr.map((src, i) => `
+      <div class="story-photo" data-i="${i}">
+        <img src="${src}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" />
+      </div>
+    `).join('');
+  }
 
   const stage = document.getElementById('worksStage');
   if (stage && Array.isArray(data.works)) {
