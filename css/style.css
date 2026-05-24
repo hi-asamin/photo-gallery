@@ -711,11 +711,21 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 .about__inner {
   display: grid;
   grid-template-columns: 1fr 1.25fr;
-  gap: 7vw;
+  grid-template-areas:
+    "index index"
+    "media text";
+  column-gap: 7vw;
+  row-gap: 4vh;
   max-width: 1400px;
   margin: 0 auto;
   align-items: center;
 }
+.about__inner > .section__index {
+  grid-area: index;
+  margin-bottom: 0;
+}
+.about__media { grid-area: media; }
+.about__text { grid-area: text; }
 .about__media {
   aspect-ratio: 3 / 4;
   overflow: hidden;
@@ -833,7 +843,12 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 
   .about__inner {
     grid-template-columns: 1fr;
-    gap: 4rem;
+    grid-template-areas:
+      "index"
+      "media"
+      "text";
+    column-gap: 0;
+    row-gap: 2.5rem;
   }
   .about__text { padding-top: 0; }
   .about__text .section__title { font-size: clamp(48px, 13vw, 84px); margin-bottom: 2rem; }
