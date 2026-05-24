@@ -129,16 +129,18 @@ ScrollTrigger.create({
 ---------------------------------------------------- */
 const menuBtn = document.getElementById('menuBtn');
 const mobileMenu = document.getElementById('mobileMenu');
-menuBtn.addEventListener('click', () => {
-  menuBtn.classList.toggle('is-open');
-  mobileMenu.classList.toggle('is-open');
-});
-mobileMenu.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => {
-    menuBtn.classList.remove('is-open');
-    mobileMenu.classList.remove('is-open');
+if (menuBtn && mobileMenu) {
+  menuBtn.addEventListener('click', () => {
+    menuBtn.classList.toggle('is-open');
+    mobileMenu.classList.toggle('is-open');
   });
-});
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menuBtn.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+    });
+  });
+}
 
 /* ----------------------------------------------------
    6. Intro text — word-by-word reveal
@@ -410,26 +412,14 @@ function buildPhotos() {
 
   const stage = document.getElementById('worksStage');
   if (stage && Array.isArray(data.works)) {
-    stage.innerHTML = data.works.map((p, i) => {
-      const num = String(i + 1).padStart(2, '0');
-      const sub = [p.location, p.year].filter(Boolean).join(' · ');
-      return `
-        <figure class="work-slide" data-i="${i}">
-          <div class="work-slide__frame">
-            <img src="${p.src}" alt="${p.title || ''}" loading="${i === 0 ? 'eager' : 'lazy'}" />
-          </div>
-          <div class="work-slide__meta">
-            <span class="work-slide__index">No. ${num}</span>
-            <h3 class="work-slide__title">${p.title || ''}</h3>
-            <div class="work-slide__divider"></div>
-            <span class="work-slide__sub">${sub}</span>
-          </div>
-        </figure>
-      `;
-    }).join('');
+    stage.innerHTML = data.works.map((p, i) => `
+      <figure class="work-slide" data-i="${i}">
+        <div class="work-slide__frame">
+          <img src="${p.src}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" />
+        </div>
+      </figure>
+    `).join('');
     window.WORKS_DATA = data.works;
-    const total = document.getElementById('worksTotal');
-    if (total) total.textContent = String(data.works.length).padStart(2, '0');
   }
 
   const grid = document.getElementById('grid');
@@ -455,39 +445,27 @@ function track(name, params) {
 }
 
 function buildAnalytics() {
-  // ヘッダーナビ（WORKS / STORY / ABOUT）
-  document.querySelectorAll('.site-header__nav a[href^="#"]').forEach(a => {
+  // ヘッダーナビ + About 内SNS のクリックを一括処理
+  document.querySelectorAll('.site-header__nav a, .about__social a').forEach(a => {
     a.addEventListener('click', () => {
-      track('nav_click', {
-        target: (a.getAttribute('href') || '').replace('#', ''),
-        location: 'header'
-      });
+      const href = a.getAttribute('href') || '';
+      if (href.startsWith('#')) {
+        track('nav_click', {
+          target: href.replace('#', ''),
+          location: 'header'
+        });
+      } else {
+        const isHeader = !!a.closest('.site-header__nav');
+        track('social_click', {
+          platform: a.getAttribute('aria-label') || 'unknown',
+          location: isHeader ? 'header' : 'about',
+          url: href
+        });
+      }
     });
   });
 
-  // モバイルメニュー
-  document.querySelectorAll('.mobile-menu a').forEach(a => {
-    a.addEventListener('click', () => {
-      track('nav_click', {
-        target: (a.getAttribute('href') || '').replace('#', ''),
-        location: 'mobile_menu'
-      });
-    });
-  });
-
-  // SNSアイコン（ヘッダー & About）
-  document.querySelectorAll('.site-header__nav .icon-link, .about__social a').forEach(a => {
-    a.addEventListener('click', () => {
-      const isHeader = a.closest('.site-header__nav');
-      track('social_click', {
-        platform: a.getAttribute('aria-label') || 'unknown',
-        location: isHeader ? 'header' : 'about',
-        url: a.getAttribute('href') || ''
-      });
-    });
-  });
-
-  // ブランドロゴ（先頭へ戻る）
+  // ブランドリンク（先頭へ戻る）
   const brand = document.querySelector('.site-header__brand');
   if (brand) {
     brand.addEventListener('click', () => {

@@ -98,11 +98,14 @@ m5591 -36 c42 -41 33 -73 -33 -122 -31 -23 -109 -80 -172 -128 -185 -140 -336
 
   <!-- ==================== HEADER ==================== -->
   <header class="site-header" id="siteHeader">
-    <a href="#top" class="site-header__brand">ASAMI</a>
+    <a href="#top" class="site-header__brand" aria-label="Top"></a>
     <nav class="site-header__nav">
-      <a href="#works">WORKS</a>
-      <a href="#story">STORY</a>
-      <a href="#about">ABOUT</a>
+      <a class="icon-link" href="#about" aria-label="About">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8.5" r="3.2" />
+          <path d="M5.4 20c.8-3.5 3.6-5.3 6.6-5.3s5.8 1.8 6.6 5.3" />
+        </svg>
+      </a>
       <a class="icon-link" href="https://www.instagram.com/maacy.photograph/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -116,17 +119,7 @@ m5591 -36 c42 -41 33 -73 -33 -122 -31 -23 -109 -80 -172 -128 -185 -140 -336
         </svg>
       </a>
     </nav>
-    <button class="site-header__menu" aria-label="menu" id="menuBtn">
-      <span></span><span></span>
-    </button>
   </header>
-
-  <!-- モバイル用オーバーレイメニュー -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#works">WORKS</a>
-    <a href="#story">STORY</a>
-    <a href="#about">ABOUT</a>
-  </div>
 
   <!-- ==================== HERO ==================== -->
   <section class="hero" id="top">
@@ -136,26 +129,9 @@ m5591 -36 c42 -41 33 -73 -33 -122 -31 -23 -109 -80 -172 -128 -185 -140 -336
       </video>
     </div>
     <div class="hero__overlay"></div>
-    <div class="hero__content">
-      <p class="hero__kicker">A VISUAL JOURNAL — 2026</p>
-      <h1 class="hero__title">
-        <span class="line"><span>Light,</span></span>
-        <span class="line"><span>landscape,</span></span>
-        <span class="line"><span>and stillness.</span></span>
-      </h1>
-      <p class="hero__subtitle">光と風景、そして静寂を撮る。</p>
-    </div>
-    <div class="hero__scroll">
-      <span>SCROLL</span>
+    <div class="hero__scroll" aria-hidden="true">
       <div class="hero__scroll-line"></div>
     </div>
-  </section>
-
-  <!-- ==================== INTRO TEXT ==================== -->
-  <section class="intro">
-    <p class="intro__text" id="introText">
-      I photograph the moments where light bends around silence — fleeting, ordinary, and never the same twice.
-    </p>
   </section>
 
   <!-- ==================== WORKS (Gallery exhibition layout) ==================== -->
@@ -163,15 +139,6 @@ m5591 -36 c42 -41 33 -73 -33 -122 -31 -23 -109 -80 -172 -128 -185 -140 -336
     <div class="works__sticky">
       <div class="works__stage" id="worksStage"></div>
       <div class="works__progress"><span id="worksProgressBar"></span></div>
-      <div class="works__head">
-        <p class="section__index">01 / WORKS</p>
-        <h2 class="section__title">Selected<br/>Works</h2>
-      </div>
-      <div class="works__counter">
-        <span id="worksCount">01</span>
-        <span class="counter__sep">—</span>
-        <span id="worksTotal">06</span>
-      </div>
     </div>
   </section>
 
@@ -181,38 +148,17 @@ m5591 -36 c42 -41 33 -73 -33 -122 -31 -23 -109 -80 -172 -128 -185 -140 -336
       <div class="story__media" id="storyMedia"></div>
       <div class="story__overlay"></div>
       <div class="story__progress"><span id="storyProgressBar"></span></div>
-      <p class="story__label">02 / STORY</p>
-      <div class="story__stage">
-        <article class="chapter">
-          <p class="chapter__num">01 — SEE</p>
-          <h2 class="chapter__title">A camera is a way of seeing.</h2>
-          <p class="chapter__body">撮ることは、見ることのもう一つの形。</p>
-        </article>
-        <article class="chapter">
-          <p class="chapter__num">02 — WAIT</p>
-          <h2 class="chapter__title">Of waiting until the world reveals itself.</h2>
-          <p class="chapter__body">光と空気が静まる瞬間を、ただ待つ。</p>
-        </article>
-        <article class="chapter">
-          <p class="chapter__num">03 — BREATHE</p>
-          <h2 class="chapter__title">Each frame is a kept breath.</h2>
-          <p class="chapter__body">一枚の写真は、止めた呼吸のかたち。</p>
-        </article>
-        <article class="chapter">
-          <p class="chapter__num">04 — REMEMBER</p>
-          <h2 class="chapter__title">Every photograph is an act of remembering.</h2>
-          <p class="chapter__body">写真は、記憶のための小さな儀式。</p>
-        </article>
+      <div class="story__stage" aria-hidden="true">
+        <article class="chapter"></article>
+        <article class="chapter"></article>
+        <article class="chapter"></article>
+        <article class="chapter"></article>
       </div>
     </div>
   </section>
 
   <!-- ==================== GRID GALLERY ==================== -->
   <section class="grid-gallery">
-    <div class="grid-gallery__head">
-      <p class="section__index">03 / ARCHIVE</p>
-      <h2 class="section__title">Archive</h2>
-    </div>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -264,12 +210,7 @@ m5591 -36 c42 -41 33 -73 -33 -122 -31 -23 -109 -80 -172 -128 -185 -140 -336
   </section>
 
   <!-- ==================== FOOTER ==================== -->
-  <footer class="site-footer">
-    <div class="site-footer__row">
-      <span>© 2026 ASAMI. All rights reserved.</span>
-      <span>Designed with quiet light.</span>
-    </div>
-  </footer>
+  <footer class="site-footer" aria-hidden="true"></footer>
 
   <!-- ==================== LIBS ==================== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

@@ -90,12 +90,15 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 }
 .site-header.is-scrolled { padding: 0.9rem 2.5rem; }
 .site-header__brand {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.45em;
-  font-weight: 500;
-  text-transform: uppercase;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: currentColor;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
+.site-header__brand:hover { transform: scale(1.4); }
 .site-header__nav {
   display: flex;
   gap: 2.2rem;
@@ -326,21 +329,30 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   inset: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4vw;
-  padding: 12vh 6vw 8vh;
+  padding: 8vh 6vw;
   opacity: 0;
   will-change: opacity;
 }
 .work-slide:first-child { opacity: 1; }
-/* 奇数（1, 3, 5）写真左 / メタ右   偶数（2, 4, 6）写真右 / メタ左 */
-.work-slide:nth-child(odd)  { flex-direction: row; }
-.work-slide:nth-child(even) { flex-direction: row-reverse; }
+
+/* 奇数：左上寄り    偶数：右下寄り  ギャラリー壁面の配列のような不均衡 */
+.work-slide:nth-child(odd) {
+  justify-content: flex-start;
+  padding-top: 12vh;
+  padding-bottom: 6vh;
+  padding-left: 12vw;
+}
+.work-slide:nth-child(even) {
+  justify-content: flex-end;
+  padding-top: 6vh;
+  padding-bottom: 12vh;
+  padding-right: 12vw;
+}
 
 .work-slide__frame {
   position: relative;
   flex: 0 0 auto;
-  width: min(42vw, 560px);
+  width: min(46vw, 600px);
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #111;
@@ -740,27 +752,14 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   .intro { padding: 12vh 6vw; }
   .intro__text { font-size: clamp(22px, 5vw, 32px); }
 
-  .works__head { top: 7vh; left: 1.2rem; }
-  .works .section__title { font-size: clamp(36px, 11vw, 60px); }
-  .works__counter { top: 7vh; right: 1.2rem; font-size: clamp(20px, 6vw, 28px); }
-
-  /* スマホでは縦積み（写真→テキスト） */
-  .work-slide {
-    flex-direction: column !important;
-    gap: 1.6rem;
-    padding: 13vh 1.2rem 4vh;
+  /* WORKSのスマホ：センター揃え、写真は控えめに */
+  .work-slide,
+  .work-slide:nth-child(odd),
+  .work-slide:nth-child(even) {
+    justify-content: center !important;
+    padding: 10vh 1.2rem !important;
   }
   .work-slide__frame { width: 78vw; max-width: 340px; }
-  .work-slide__meta { max-width: 78vw; gap: 0.9rem; }
-  .work-slide__title { font-size: clamp(22px, 6vw, 30px); }
-
-  /* 章配置もスマホで余裕を持たせる */
-  .chapter { width: min(86vw, 480px); }
-  .chapter:nth-child(1) { top: 18vh; left: 1.2rem; }
-  .chapter:nth-child(2) { bottom: 14vh; right: 1.2rem; }
-  .chapter:nth-child(3) { top: 13vh; right: 1.2rem; }
-  .chapter:nth-child(4) { bottom: 16vh; left: 1.2rem; }
-  .chapter__title { font-size: clamp(32px, 8.4vw, 48px); }
 
   .grid-gallery { padding: 14vh 1.2rem 10vh; }
   .grid-gallery__head { padding: 0 0 1.5rem; margin-bottom: 2.5rem; gap: 1rem; }
