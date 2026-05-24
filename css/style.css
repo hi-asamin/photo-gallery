@@ -709,41 +709,38 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   background: #ffffff;
 }
 .about__inner {
-  max-width: 720px;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 7vw;
+  max-width: 1400px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-}
-.about__inner .section__index { margin-bottom: 1.2rem; }
-.about__title {
-  margin-bottom: 6vh;
-  font-size: clamp(64px, 9vw, 140px);
 }
 .about__media {
-  width: min(520px, 78vw);
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: #000;
-  margin-bottom: 7vh;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.04);
 }
 .about__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.about__text {
-  max-width: 560px;
-  margin-bottom: 6vh;
+.about__text { padding: 2vh 0; }
+.about__text .section__index { margin-bottom: 1.4rem; }
+.about__text .section__title {
+  margin-bottom: 3rem;
+  font-size: clamp(56px, 7vw, 110px);
 }
 .about__text p {
+  max-width: 540px;
   font-weight: 300;
   font-size: 0.98rem;
   letter-spacing: 0.04em;
   line-height: 1.95;
   color: #000;
+  margin-bottom: 3rem;
 }
 
 /* ==================================================
@@ -751,7 +748,6 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 ================================================== */
 .about__social {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 1.4rem;
 }
@@ -764,14 +760,14 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 }
 .about__social ul {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 .about__social a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border: 1px solid rgba(0,0,0,0.18);
   border-radius: 50%;
   color: #111;
@@ -835,8 +831,12 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
     aspect-ratio: 4 / 5;
   }
 
-  .about__media { width: 80vw; max-width: 320px; }
-  .about__title { font-size: clamp(48px, 13vw, 84px); margin-bottom: 5vh; }
+  .about__inner {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  .about__text { padding-top: 0; }
+  .about__text .section__title { font-size: clamp(48px, 13vw, 84px); margin-bottom: 2rem; }
 
   .grid-gallery { padding: 14vh 1.2rem 10vh; }
   .grid-gallery__head { padding: 0 0 1.5rem; margin-bottom: 2.5rem; gap: 1rem; }
