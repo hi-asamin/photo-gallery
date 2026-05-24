@@ -6,14 +6,6 @@ window.PHOTOS = {
   // hero は index.html の <video src="assets/videos/hero.mp4"> でハードコード
   // 動画を差し替える場合は assets/videos/hero.mp4 を入れ替えるだけ
 
-  // STORY セクションは章数に合わせて4枚（順番に切り替わります）
-  story: [
-    "assets/photos/sample-07.jpg",
-    "assets/photos/sample-09.jpg",
-    "assets/photos/sample-04.jpg",
-    "assets/photos/sample-10.jpg",
-  ],
-
   about: "assets/photos/profile.png",
 
   works: [
@@ -25,13 +17,14 @@ window.PHOTOS = {
     { src: "assets/photos/sample-08.jpg", title: "Untitled — 06", location: "", year: "" },
   ],
 
+  // archive の layout: "default" | "tall"（縦2行）| "wide"（横2列）| "hero"（2列×2行＝主役写真）
   archive: [
     { src: "assets/photos/sample-09.jpg", layout: "default" },
     { src: "assets/photos/sample-01.jpg", layout: "tall"    },
-    { src: "assets/photos/sample-07.jpg", layout: "default" },
-    { src: "assets/photos/sample-04.jpg", layout: "wide"    },
+    { src: "assets/photos/sample-07.jpg", layout: "hero"    },
+    { src: "assets/photos/sample-04.jpg", layout: "default" },
     { src: "assets/photos/sample-10.jpg", layout: "default" },
-    { src: "assets/photos/sample-02.jpg", layout: "default" },
+    { src: "assets/photos/sample-02.jpg", layout: "wide"    },
     { src: "assets/photos/sample-08.jpg", layout: "tall"    },
     { src: "assets/photos/sample-06.jpg", layout: "default" },
   ],

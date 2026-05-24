@@ -248,76 +248,75 @@ function buildWorksSlides() {
 }
 
 /* ----------------------------------------------------
-   8. Story — Apple LP-like chapter scrollytelling
-   章ごとに見出しが切り替わり、背景画像はスティッキーで保持
+   8. Header nav — current section highlight
 ---------------------------------------------------- */
-function buildStoryPin() {
-  const chapters = gsap.utils.toArray('.chapter');
-  const photos = gsap.utils.toArray('.story-photo');
-  const bar = document.getElementById('storyProgressBar');
-  const N = chapters.length;
-  if (!N) return;
-
-  // 各章の入退場方向：左→右→上→下 と循環させて単調さを消す
-  const dirs = [
-    { tx:  -60, ty:    0 },  // 章1: 左から
-    { tx:   60, ty:    0 },  // 章2: 右から
-    { tx:    0, ty:  -60 },  // 章3: 上から
-    { tx:    0, ty:   60 },  // 章4: 下から
+function buildNavActive() {
+  const map = [
+    { sel: '#works',   link: 'a[href="#works"]' },
+    { sel: '#archive', link: 'a[href="#archive"]' },
+    { sel: '#about',   link: 'a[href="#about"]' },
   ];
-
-  ScrollTrigger.create({
-    trigger: '.story',
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 0.4,
-    onUpdate: (self) => {
-      const p = self.progress;
-      if (bar) bar.style.width = (p * 100) + '%';
-
-      const margin = 0.06;
-      const adj = (p - margin) / Math.max(0.0001, 1 - 2 * margin);
-      const pos = Math.max(0, Math.min(N - 1, adj * (N - 1)));
-
-      // 章テキスト：方向を循環させて入退場
-      chapters.forEach((ch, i) => {
-        const dist = i - pos;
-        const aDist = Math.abs(dist);
-        const opacity = Math.max(0, 1 - aDist * 1.9);
-        const d = dirs[i % dirs.length];
-        const x = d.tx * dist;
-        const y = d.ty * dist;
-        gsap.set(ch, { opacity, x, y });
-      });
-
-      // 背景写真：クロスフェード + 方向性クリップリビール + 一方向ズーム
-      photos.forEach((photo, i) => {
-        const dist = i - pos;
-        const aDist = Math.abs(dist);
-        const opacity = Math.max(0, 1 - aDist * 1.5);
-        photo.style.opacity = String(opacity);
-
-        // フェードに加えてクリップで方向性を出す（章ごとに違う方向で開く）
-        // 章0: 横（中央→外）/ 章1: 縦 / 章2: 横（外→中央）/ 章3: 縦
-        const clamped = Math.max(-1, Math.min(1, dist));
-        const inset = Math.abs(clamped) * 25; // 0..25%
-        let clip;
-        if (i % 2 === 0) clip = `inset(0 ${inset}% 0 ${inset}%)`;
-        else             clip = `inset(${inset}% 0 ${inset}% 0)`;
-        photo.style.clipPath = clip;
-
-        const img = photo.querySelector('img');
-        if (img) {
-          const scale = 1.10 - clamped * 0.08;
-          img.style.transform = `scale(${scale})`;
-        }
-      });
+  const setActive = (linkSel) => {
+    document.querySelectorAll('.site-header__nav a, .mobile-menu a').forEach(a => {
+      a.classList.remove('is-active');
+    });
+    if (linkSel) {
+      document.querySelectorAll(linkSel).forEach(a => a.classList.add('is-active'));
     }
+  };
+  map.forEach(({ sel, link }) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top center',
+      end: 'bottom center',
+      onEnter: () => setActive(link),
+      onEnterBack: () => setActive(link),
+      onLeave: () => setActive(null),
+      onLeaveBack: () => setActive(null),
+    });
   });
 }
 
 /* ----------------------------------------------------
-   8b. Hero — scale-down exit (Apple LP風）
+   8b. Custom cursor (hover-capable devices)
+---------------------------------------------------- */
+function buildCursor() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const cursor = document.getElementById('cursor');
+  if (!cursor) return;
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let cx = mx, cy = my;
+
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    cursor.classList.add('is-ready');
+  }, { passive: true });
+
+  const lerp = (a, b, n) => (1 - n) * a + n * b;
+  const tick = () => {
+    cx = lerp(cx, mx, 0.22);
+    cy = lerp(cy, my, 0.22);
+    cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+    requestAnimationFrame(tick);
+  };
+  tick();
+
+  // Hover targets
+  const hoverSel = 'a, button, .grid__item, .work-slide__frame, .site-header__brand';
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(hoverSel)) cursor.classList.add('is-hover');
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest(hoverSel)) cursor.classList.remove('is-hover');
+  });
+}
+
+/* ----------------------------------------------------
+   8c. Hero — scale-down exit (Apple LP風）
    スクロールで次セクションに移る瞬間に縮んでカード化
 ---------------------------------------------------- */
 function buildHeroExit() {
@@ -399,17 +398,6 @@ function buildPhotos() {
   setSrc('.about__media img', data.about);
   // hero は index.html に <video> でハードコード済み（assets/videos/hero.mp4）
 
-  // Story: 章数に合わせて複数の写真をスタック
-  const storyMedia = document.getElementById('storyMedia');
-  if (storyMedia) {
-    const storyArr = Array.isArray(data.story) ? data.story : (data.story ? [data.story] : []);
-    storyMedia.innerHTML = storyArr.map((src, i) => `
-      <div class="story-photo" data-i="${i}">
-        <img src="${src}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" />
-      </div>
-    `).join('');
-  }
-
   const stage = document.getElementById('worksStage');
   if (stage && Array.isArray(data.works)) {
     stage.innerHTML = data.works.map((p, i) => `
@@ -481,11 +469,12 @@ window.addEventListener('load', () => {
   buildPhotos();
   buildIntroWords();
   buildWorksSlides();
-  buildStoryPin();
+  buildNavActive();
   buildHeroExit();
   buildReveals();
   buildTitleReveals();
   buildAnalytics();
+  buildCursor();
   runOpening();
 
   // Refresh after fonts/images settle
