@@ -115,17 +115,18 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
 .loader {
   position: fixed;
   inset: 0;
-  background: #0a0a0a;
+  background: #000;
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: all;
 }
-.loader__svg {
-  width: min(82vw, 720px);
-  height: auto;
-  overflow: visible;
+.loader__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* ==================================================
@@ -264,6 +265,22 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   inset: 0;
   z-index: 2;
   background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%);
+}
+/* ヒーローに常時表示するサイン（透過オーバーレイ） */
+.hero__signature {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.hero__signature img {
+  width: min(60vw, 720px);
+  height: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 20px rgba(0,0,0,0.45));
 }
 .hero__content {
   position: relative;
@@ -740,8 +757,10 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   letter-spacing: 0.04em;
   line-height: 1.95;
   color: #000;
-  margin-bottom: 3rem;
+  margin-bottom: 1.4rem;
 }
+.about__text > div[data-reveal] { margin-bottom: 3rem; }
+.about__text > div[data-reveal] > p:last-child { margin-bottom: 0; }
 
 /* ==================================================
    About — Social
@@ -811,6 +830,7 @@ button { background: none; border: 0; cursor: pointer; color: inherit; font: inh
   .hero__content { padding: 0 1.2rem; }
   .hero__title { font-size: clamp(48px, 14vw, 80px); }
   .hero__subtitle { font-size: 12px; }
+  .hero__signature img { width: 82vw; }
 
   .intro { padding: 12vh 6vw; }
   .intro__text { font-size: clamp(22px, 5vw, 32px); }
