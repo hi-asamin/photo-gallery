@@ -19,56 +19,57 @@ gsap.ticker.lagSmoothing(0);
 
 /* ----------------------------------------------------
    2. Opening Signature Animation
-   実サインのベクタを clipPath の rect 幅で
-   左→右にスイープして「ペンが書き進める」演出にする
+   実サインを書き進めるイントロ動画を全画面再生し、
+   再生終了で上方向に抜けてヒーローを見せる
 ---------------------------------------------------- */
 function runOpening() {
   lenis.stop();
   document.body.style.overflow = 'hidden';
 
-  const VB_WIDTH = 1564.402026;
-  const rect = document.getElementById('sigRevealRect');
-  const dot = document.querySelector('.sig-dot');
+  const video = document.getElementById('loaderVideo');
+  let dismissed = false;
 
-  const tl = gsap.timeline({
-    onComplete: () => {
-      lenis.start();
-      document.body.style.overflow = '';
-      runHeroIntro();
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        lenis.start();
+        document.body.style.overflow = '';
+        runHeroIntro();
+      }
+    });
+
+    // フェードアウト → 上に抜ける
+    tl.to('.loader__video', {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.in'
+    });
+
+    tl.to('.loader', {
+      yPercent: -100,
+      duration: 0.95,
+      ease: 'expo.inOut'
+    }, '-=0.3');
+
+    tl.set('.loader', { display: 'none' });
+  };
+
+  if (video) {
+    // 再生完了で自動的に次へ
+    video.addEventListener('ended', dismiss, { once: true });
+    const p = video.play();
+    if (p && typeof p.catch === 'function') {
+      // 自動再生がブロックされた場合もタイマーで進める
+      p.catch(() => {});
     }
-  });
-
-  // ペン先が左→右へ走る
-  tl.to(rect, {
-    attr: { width: VB_WIDTH },
-    duration: 2.8,
-    ease: 'power1.inOut'
-  });
-
-  // i のドットを「ぽん」と置く（ペン到達直前）
-  tl.to(dot, {
-    opacity: 1,
-    duration: 0.22,
-    ease: 'power2.out'
-  }, '-=0.35');
-
-  // 余韻
-  tl.to({}, { duration: 0.55 });
-
-  // ローダーフェードアウト → 上に抜ける
-  tl.to('.loader__svg', {
-    opacity: 0,
-    duration: 0.5,
-    ease: 'power2.in'
-  });
-
-  tl.to('.loader', {
-    yPercent: -100,
-    duration: 0.95,
-    ease: 'expo.inOut'
-  }, '-=0.3');
-
-  tl.set('.loader', { display: 'none' });
+    // フォールバック（再生不可・想定外の長尺対策）
+    setTimeout(dismiss, 7000);
+  } else {
+    dismiss();
+  }
 }
 
 /* ----------------------------------------------------
